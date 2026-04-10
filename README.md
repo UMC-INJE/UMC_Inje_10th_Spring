@@ -39,9 +39,9 @@ Copyright © Sojung Park (Bei) All rights reserved.
 
 ## 🍀 Members
 
-| [ ![텍스트](https://avatars.githubusercontent.com/u/212698944?v=4)](https://github.com/chiung22) | [  ![텍스트](https://avatars.githubusercontent.com/u/117339112?v=4)](https://github.com/kimjonghn) | [![텍스트](https://avatars.githubusercontent.com/u/230173129?v=4)](https://github.com/kty2k15-cloud) |
+| [ ![텍스트](https://avatars.githubusercontent.com/u/212698944?v=4)](https://github.com/chiung22) | [  ![텍스트](https://avatars.githubusercontent.com/u/117339112?v=4)](https://github.com/kimjonghn) | [![텍스트](https://avatars.githubusercontent.com/u/230173129?v=4)](https://github.com/kty2k15-cloud) | [![텍스트](https://avatars.githubusercontent.com/u/230173129?v=4)](https://github.com/minseosong5) |
 |----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| 치키/송치웅                                                                                             | 아공티/김종환                                                                                         | 텐텐/김태완                                                                                       |
+| 치키/송치웅                                                                                             | 아공티/김종환                                                                                         | 텐텐/김태완                                                                                       |소온/송민서                                                                                       |
 
 <br>
 
