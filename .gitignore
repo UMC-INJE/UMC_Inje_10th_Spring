@@ -1,0 +1,35 @@
+### 필수 제외 항목 ###
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### 빌드 및 로그 파일 ###
+*.class
+*.log
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### 환경 설정 및 민감 정보 ###
+.env
+application.yml
+HELP.md
+
+### 기타 IDE 및 OS ###
+.vscode/
+.classpath
+.project
+.settings
+/nbproject/private/
+hs_err_pid*

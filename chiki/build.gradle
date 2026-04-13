@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'umc_10th_chiki'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 의존성 수정
+    /*
+        웹 서버 의존성 오류 (starter-webmvc → starter-web)
+
+        webmvc 라이브러리만으로는 내장 톰캣(Tomcat) 웹 서버가 켜지지 않는다.
+        웹 서버가 안 켜지니 당연히 홈페이지(localhost) 접속도 불가능하다.
+        이를 spring-boot-starter-web으로 변경하여 서버가 8080 포트에서 계속 실행되도록 수정함.
+    */
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' // 3. 테스트 의존성 수정
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0' // error -> Swagger 버전 수정함
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
