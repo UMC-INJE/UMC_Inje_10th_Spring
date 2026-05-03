@@ -1,0 +1,15 @@
+
+package com.example.umc_10th_chiki.domain.store.exception;
+
+
+
+public class StoreException extends RuntimeException {
+
+    public StoreException(String message) {
+
+        super(message);
+
+    }
+
+}
+
