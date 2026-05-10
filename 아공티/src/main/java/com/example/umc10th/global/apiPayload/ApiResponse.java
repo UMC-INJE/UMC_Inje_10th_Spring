@@ -1,6 +1,7 @@
 package com.example.umc10th.global.apiPayload;
 
 import com.example.umc10th.global.apiPayload.code.BaseErrorCode;
+import com.example.umc10th.global.apiPayload.code.BaseSuccessCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
@@ -20,10 +21,18 @@ public class ApiResponse<T> {
     @JsonProperty("message")
     private final String message;
 
-
     @JsonProperty("result")
     private T result;
 
+    // --- 성공한 경우 응답 생성
+    public static <T> ApiResponse<T> onSuccess(T result) {
+        return new ApiResponse<>(true, "COMMON200", "요청에 성공하였습니다.", result);
+    }
+
+    // 만약 성공 코드도 상황에 따라 다르게 넘겨줌
+    public static <T> ApiResponse<T> of(BaseSuccessCode code, T result) {
+        return new ApiResponse<>(true, code.getCode(), code.getMessage(), result);
+    }
     // 실패한 경우 응답 생성
     public static <T> ApiResponse<T> onFailure(BaseErrorCode code, T result) {
         return new ApiResponse<>(false, code.getCode(), code.getMessage(), result);

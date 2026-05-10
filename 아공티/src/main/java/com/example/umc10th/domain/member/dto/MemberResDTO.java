@@ -1,6 +1,7 @@
 package com.example.umc10th.domain.member.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 
 public class MemberResDTO {
     @Builder
