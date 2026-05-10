@@ -1,36 +1,25 @@
 package com.example.umc_10th_chiki.domain.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
 import java.util.List;
 
 public class MemberReqDTO {
 
-    @Getter
-    public static class JoinDTO {
-        @JsonProperty("user_name")
-        private String userName;
+    public record JoinDTO(
+            @JsonProperty("user_name") String userName,
+            @JsonProperty("user_alias") String userAlias,
+            @JsonProperty("birth_date") String birthDate,
+            @JsonProperty("user_email") String userEmail,
+            @JsonProperty("user_address") String userAddress,
+            @JsonProperty("user_gender") Integer userGender,
+            @JsonProperty("user_phone") String userPhone,
+            @JsonProperty("region_id") Long regionId,
+            @JsonProperty("notify_setting_id") Long notifySettingId,
+            @JsonProperty("category_preferences") List<CategoryPreferenceDTO> categoryPreferences
+    ) {}
 
-        @JsonProperty("user_alias")
-        private String userAlias;
-
-        @JsonProperty("birth_date")
-        private String birthDate;
-
-        @JsonProperty("user_email")
-        private String userEmail;
-
-        @JsonProperty("region_id")
-        private Long regionId;
-
-        @JsonProperty("category_preferences")
-        private List<CategoryPreferenceDTO> categoryPreferences;
-    }
-
-    @Getter
-    public static class CategoryPreferenceDTO {
-        @JsonProperty("category_id")
-        private Long categoryId;
-        private Integer score;
-    }
+    public record CategoryPreferenceDTO(
+            @JsonProperty("category_id") Long categoryId,
+            Integer score
+    ) {}
 }

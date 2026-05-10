@@ -1,7 +1,6 @@
-package com.example.umc_10th_chiki.domain.review.entity;
+package com.example.umc_10th_chiki.domain.mission.entity;
 
 import com.example.umc_10th_chiki.domain.member.entity.Member;
-import com.example.umc_10th_chiki.domain.store.entity.Store;
 import com.example.umc_10th_chiki.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,23 +10,21 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Review extends BaseEntity {
+public class MemberMission extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String body;
-
-    @Column(nullable = false)
-    private Float score;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(15) DEFAULT 'CHALLENGING'")
+    private MissionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    private Store store;
+    @JoinColumn(name = "mission_id")
+    private Mission mission;
 }
