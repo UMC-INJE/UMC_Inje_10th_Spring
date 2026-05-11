@@ -1,40 +1,35 @@
 package com.example.umc10th.domain.user.controller;
-import com.example.umc10th.domain.user.dto.UserReqDTO;
+
 import com.example.umc10th.domain.user.dto.UserResDTO;
+import com.example.umc10th.domain.user.service.UserService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
-
-
-
 public class UserController {
-    @PostMapping("/auth/signup")
-    public ApiResponse<UserResDTO.SignupResultDTO> signup(
-            @RequestBody UserReqDTO.SignupDTO request
-    ) {
-        UserResDTO.SignupResultDTO response = UserResDTO.SignupResultDTO.builder()
-                .userId(1L)
-                .userLoginId(request.getUserLoginId())
-                .userNickname(request.getUserNickname())
-                .message("회원가입이 완료되었습니다.")
-                .build();
 
-        return ApiResponse.onSuccess(response);
-    }
+    private final UserService userService;
 
+    @Operation(
+            summary = "마이페이지 조회 API",
+            description = "사용자의 마이페이지 정보를 조회합니다."
+    )
     @GetMapping("/user/mypage")
     public ApiResponse<UserResDTO.MyPageDTO> getMyPage(
-            @RequestHeader("Authorization") String authorization
-    ) {
-        UserResDTO.MyPageDTO response = UserResDTO.MyPageDTO.builder()
-                .userNickname("nickname012")
-                .userEmail("test@naver.com")
-                .userPhone("010-1234-5678")
-                .userPoint(2500)
-                .build();
 
-        return ApiResponse.onSuccess(response);
+            @Parameter(description = "Access Token", example = "Bearer accessToken")
+            @RequestHeader(value = "Authorization", required = false) String authorization
+    ) {
+
+        Long userId = 1L;
+
+        return ApiResponse.onSuccess(
+                userService.getMyPage(userId)
+        );
     }
 }

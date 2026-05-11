@@ -1,105 +1,68 @@
 package com.example.umc10th.domain.mission.controller;
 
-import com.example.umc10th.domain.mission.dto.MissionReqDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
+import com.example.umc10th.domain.mission.service.MissionService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
-
 public class MissionController {
+
+    private final MissionService missionService;
+
+    @Operation(
+            summary = "홈 화면 미션 목록 조회 API",
+            description = "현재 선택된 지역에서 도전 가능한 미션 목록을 조회합니다."
+    )
     @GetMapping("/home/missions")
     public ApiResponse<MissionResDTO.HomeMissionListDTO> getHomeMissions(
-            @RequestHeader("Authorization") String authorization,
-            @RequestParam Long regionId,
+
+            @Parameter(description = "Access Token", example = "Bearer accessToken")
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+
+            @Parameter(description = "현재 선택된 지역 ID", example = "1")
+            @RequestParam("region_id") Long regionId,
+
+            @Parameter(description = "페이지 번호", example = "0")
             @RequestParam Integer page,
+
+            @Parameter(description = "한 페이지에 가져올 데이터 수", example = "10")
             @RequestParam Integer size
     ) {
-        MissionResDTO.HomeMissionDTO mission = MissionResDTO.HomeMissionDTO.builder()
-                .missionId(1L)
-                .storeName("김밥천국")
-                .missionContent("5000원 이상 주문하기")
-                .reward("500P")
-                .deadline("2026-05-10")
-                .build();
-
-        MissionResDTO.HomeMissionListDTO response = MissionResDTO.HomeMissionListDTO.builder()
-                .missions(List.of(mission))
-                .page(page)
-                .size(size)
-                .build();
-
-        return ApiResponse.onSuccess(response);
+        return ApiResponse.onSuccess(
+                missionService.getHomeMissions(regionId, page, size)
+        );
     }
 
+    @Operation(
+            summary = "내 미션 목록 조회 API",
+            description = "사용자가 진행중 또는 진행완료한 미션 목록을 조회합니다."
+    )
     @GetMapping("/my-mission")
     public ApiResponse<MissionResDTO.MyMissionListDTO> getMyMissions(
+
+            @Parameter(description = "Access Token", example = "Bearer accessToken")
             @RequestHeader("Authorization") String authorization,
+
+            @Parameter(description = "미션 진행 상태", example = "진행중")
             @RequestParam String status,
+
+            @Parameter(description = "페이지 번호", example = "0")
             @RequestParam Integer page,
+
+            @Parameter(description = "한 페이지에 가져올 데이터 수", example = "10")
             @RequestParam Integer size
     ) {
-        MissionResDTO.MyMissionDTO mission = MissionResDTO.MyMissionDTO.builder()
-                .myMissionId(1L)
-                .missionId(1L)
-                .storeName("김밥천국")
-                .missionContent("5000원 이상 주문하기")
-                .status(status)
-                .build();
 
-        MissionResDTO.MyMissionListDTO response = MissionResDTO.MyMissionListDTO.builder()
-                .myMissions(List.of(mission))
-                .page(page)
-                .size(size)
-                .build();
+        Long userId = 1L;
 
-        return ApiResponse.onSuccess(response);
-    }
-
-    @PostMapping("/my-missions")
-    public ApiResponse<MissionResDTO.ChallengeResultDTO> challengeMission(
-            @RequestHeader("Authorization") String authorization,
-            @RequestBody MissionReqDTO.ChallengeMissionDTO request
-    ) {
-        MissionResDTO.ChallengeResultDTO response = MissionResDTO.ChallengeResultDTO.builder()
-                .myMissionId(1L)
-                .missionId(request.getMissionId())
-                .status("진행중")
-                .message("미션 도전이 완료되었습니다.")
-                .build();
-
-        return ApiResponse.onSuccess(response);
-    }
-
-    @PatchMapping("/my-missions/{myMissionId}/success")
-    public ApiResponse<MissionResDTO.MissionSuccessDTO> successMission(
-            @RequestHeader("Authorization") String authorization,
-            @PathVariable Long myMissionId
-    ) {
-        MissionResDTO.MissionSuccessDTO response = MissionResDTO.MissionSuccessDTO.builder()
-                .myMissionId(myMissionId)
-                .status("진행완료")
-                .message("미션이 성공 처리되었습니다.")
-                .build();
-
-        return ApiResponse.onSuccess(response);
-    }
-
-    @GetMapping("/my-mission/{myMissionId}/review")
-    public ApiResponse<MissionResDTO.ReviewPageDTO> getReviewPage(
-            @RequestHeader("Authorization") String authorization,
-            @PathVariable Long myMissionId
-    ) {
-        MissionResDTO.ReviewPageDTO response = MissionResDTO.ReviewPageDTO.builder()
-                .myMissionId(myMissionId)
-                .storeId(1L)
-                .storeName("김밥천국")
-                .missionContent("5000원 이상 주문하기")
-                .build();
-
-        return ApiResponse.onSuccess(response);
+        return ApiResponse.onSuccess(
+                missionService.getMyMissions(userId, status, page, size)
+        );
     }
 }
