@@ -1,37 +1,34 @@
 package com.example.umc10th.global.apiPayload;
 
-import com.example.umc10th.global.apiPayload.code.BaseSuccessCode;
 import com.example.umc10th.global.apiPayload.code.BaseErrorCode;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.example.umc10th.global.apiPayload.code.GeneralSuccessCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+
 @Getter
 @AllArgsConstructor
-@JsonPropertyOrder({"isSuccess", "code", "message", "result"})
 public class ApiResponse<T> {
 
-    @JsonProperty("isSuccess")
     private final Boolean isSuccess;
-
     private final String code;
-
     private final String message;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
 
-
-    // 1. 성공한 경우 응답 생성
-    // BaseCode라는 성공 규격 인터페이스를 받아서 처리하도록 수정함
-    public static <T> ApiResponse<T> onSuccess(T result){
-        return new ApiResponse<>(true, "COMMON200", "요청에 성공하였습니다.", result);
+    public static <T> ApiResponse<T> onSuccess(T result) {
+        return new ApiResponse<>(
+                true,
+                GeneralSuccessCode.OK.getCode(),
+                GeneralSuccessCode.OK.getMessage(),
+                result
+        );
     }
-
-    // 2. 실패한 경우 응답 생성 (에러 코드 규격 사용)
-    public static <T> ApiResponse<T> onFailure(BaseErrorCode code, T result) {
-        return new ApiResponse<>(false, code.getCode(), code.getMessage(), result);
+    public static <T> ApiResponse<T> onFailure(BaseErrorCode errorCode, T result) {
+        return new ApiResponse<>(
+                false,
+                errorCode.getCode(),
+                errorCode.getMessage(),
+                result
+        );
     }
 }
