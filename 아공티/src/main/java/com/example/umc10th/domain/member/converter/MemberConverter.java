@@ -13,7 +13,6 @@ public class MemberConverter {
                 .name(member.getName())
                 .point(member.getPoint())
                 .phoneNumber(member.getPhoneNumber())
-                .profileUrl(member.getProfileUrl())
                 .build();
     }
 }

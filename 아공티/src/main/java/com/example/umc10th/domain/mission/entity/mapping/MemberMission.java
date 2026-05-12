@@ -1,4 +1,32 @@
 package com.example.umc10th.domain.mission.entity.mapping;
 
-public class MemberMission {
+import com.example.umc10th.domain.member.entity.Member;
+import com.example.umc10th.domain.mission.entity.Mission;
+import com.example.umc10th.domain.mission.enums.MissionStatus;
+import com.example.umc10th.global.apiPayload.common.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Table(name = "user_mission")
+public class MemberMission extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "is_complete")
+    private MissionStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mission_id")
+    private Mission mission;
 }

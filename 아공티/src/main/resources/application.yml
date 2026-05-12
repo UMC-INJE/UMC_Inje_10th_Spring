@@ -4,16 +4,16 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/umc?serverTimezone=Asia/Seoul&useSSL=false
-    username: ${DB_USER}
-    password: ${DB_PW}
+    url: jdbc:mysql://127.0.0.1:3306/umc?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 6566
 
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
