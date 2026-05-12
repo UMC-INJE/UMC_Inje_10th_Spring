@@ -1,4 +1,58 @@
 package com.example.umc10th.domain.mission.converter;
 
+import com.example.umc10th.domain.mission.dto.MissionResDTO;
+import com.example.umc10th.domain.mission.entity.Mission;
+import com.example.umc10th.domain.mission.entity.MyMission;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
 public class MissionConverter {
+
+    public static MissionResDTO.HomeMissionDTO toHomeMissionDTO(Mission mission) {
+        return MissionResDTO.HomeMissionDTO.builder()
+                .missionId(mission.getMissionId())
+                .storeName(mission.getStore().getStoreName())
+                .missionReward(mission.getMissionReward())
+                .missionContent(mission.getMissionContent())
+                .deadline(String.valueOf(mission.getDeadline()))
+                .build();
+    }
+
+    public static MissionResDTO.HomeMissionListDTO toHomeMissionListDTO(Page<Mission> missions) {
+        List<MissionResDTO.HomeMissionDTO> missionList = missions.stream()
+                .map(MissionConverter::toHomeMissionDTO)
+                .toList();
+
+        return MissionResDTO.HomeMissionListDTO.builder()
+                .missionList(missionList)
+                .page(missions.getNumber())
+                .size(missions.getSize())
+                .hasNext(missions.hasNext())
+                .build();
+    }
+
+    public static MissionResDTO.MyMissionDTO toMyMissionDTO(MyMission myMission) {
+        return MissionResDTO.MyMissionDTO.builder()
+                .myMissionId(myMission.getMyMissionId())
+                .missionId(myMission.getMission().getMissionId())
+                .storeName(myMission.getMission().getStore().getStoreName())
+                .missionReward(myMission.getMission().getMissionReward())
+                .missionContent(myMission.getMission().getMissionContent())
+                .status(myMission.getStatus())
+                .build();
+    }
+
+    public static MissionResDTO.MyMissionListDTO toMyMissionListDTO(Page<MyMission> myMissions) {
+        List<MissionResDTO.MyMissionDTO> myMissionList = myMissions.stream()
+                .map(MissionConverter::toMyMissionDTO)
+                .toList();
+
+        return MissionResDTO.MyMissionListDTO.builder()
+                .myMissionList(myMissionList)
+                .page(myMissions.getNumber())
+                .size(myMissions.getSize())
+                .hasNext(myMissions.hasNext())
+                .build();
+    }
 }

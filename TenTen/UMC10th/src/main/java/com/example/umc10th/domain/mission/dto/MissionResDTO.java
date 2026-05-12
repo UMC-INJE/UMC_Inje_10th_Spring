@@ -1,5 +1,6 @@
 package com.example.umc10th.domain.mission.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,14 +8,24 @@ import lombok.Getter;
 import java.util.List;
 
 public class MissionResDTO {
+
     @Getter
     @Builder
     @AllArgsConstructor
     public static class HomeMissionDTO {
+
+        @JsonProperty("mission_id")
         private Long missionId;
+
+        @JsonProperty("store_name")
         private String storeName;
+
+        @JsonProperty("mission_reward")
+        private String missionReward;
+
+        @JsonProperty("mission_content")
         private String missionContent;
-        private String reward;
+
         private String deadline;
     }
 
@@ -22,19 +33,37 @@ public class MissionResDTO {
     @Builder
     @AllArgsConstructor
     public static class HomeMissionListDTO {
-        private List<HomeMissionDTO> missions;
+
+        @JsonProperty("mission_list")
+        private List<HomeMissionDTO> missionList;
+
         private Integer page;
         private Integer size;
+
+        @JsonProperty("has_next")
+        private Boolean hasNext;
     }
 
     @Getter
     @Builder
     @AllArgsConstructor
     public static class MyMissionDTO {
+
+        @JsonProperty("my_mission_id")
         private Long myMissionId;
+
+        @JsonProperty("mission_id")
         private Long missionId;
+
+        @JsonProperty("store_name")
         private String storeName;
+
+        @JsonProperty("mission_reward")
+        private String missionReward;
+
+        @JsonProperty("mission_content")
         private String missionContent;
+
         private String status;
     }
 
@@ -42,37 +71,14 @@ public class MissionResDTO {
     @Builder
     @AllArgsConstructor
     public static class MyMissionListDTO {
-        private List<MyMissionDTO> myMissions;
+
+        @JsonProperty("my_mission_list")
+        private List<MyMissionDTO> myMissionList;
+
         private Integer page;
         private Integer size;
-    }
 
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    public static class ChallengeResultDTO {
-        private Long myMissionId;
-        private Long missionId;
-        private String status;
-        private String message;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    public static class MissionSuccessDTO {
-        private Long myMissionId;
-        private String status;
-        private String message;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    public static class ReviewPageDTO {
-        private Long myMissionId;
-        private Long storeId;
-        private String storeName;
-        private String missionContent;
+        @JsonProperty("has_next")
+        private Boolean hasNext;
     }
 }
