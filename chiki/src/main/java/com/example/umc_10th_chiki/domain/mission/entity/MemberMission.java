@@ -14,6 +14,7 @@ public class MemberMission extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "my_mission_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -21,7 +22,7 @@ public class MemberMission extends BaseEntity {
     private MissionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "user_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
