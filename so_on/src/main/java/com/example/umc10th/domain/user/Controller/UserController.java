@@ -5,6 +5,7 @@ import com.example.umc10th.domain.user.dto.UserRequestDTO;
 import com.example.umc10th.domain.user.dto.UserResponseDTO;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ApiResponse<UserResponseDTO.JoinResultDto> join(@RequestBody UserRequestDTO.JoinDto request) {
+    public ApiResponse<UserResponseDTO.JoinResultDto> join(@Valid @RequestBody UserRequestDTO.JoinDto request) {
         // 임시 응답 (Stub)
         return ApiResponse.onSuccess(UserResponseDTO.JoinResultDto.builder()
                 .userId(1L)

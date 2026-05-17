@@ -10,6 +10,9 @@ import com.example.umc10th.domain.review.dto.ReviewRequestDTO;
 import com.example.umc10th.domain.review.dto.ReviewResponseDTO;
 import com.example.umc10th.domain.review.exception.ReviewException;
 import com.example.umc10th.domain.store.Repository.StoreRepository;
+import com.example.umc10th.domain.user.Repository.UserRepository;
+import com.example.umc10th.domain.user.code.UserErrorCode;
+import com.example.umc10th.domain.user.exception.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +34,7 @@ public class ReviewService {
     private final ReplyRepository replyRepository;
     private final StoreRepository storeRepository;
     private final OwnerRepository ownerRepository;
+    private final UserRepository userRepository;
 
     public ReviewResponseDTO.StoreReviewPageDto getStoreReviews(Long ownerId, Long storeId, Integer page) {
         validateOwnerStore(ownerId, storeId);
@@ -117,5 +121,69 @@ public class ReviewService {
                 .map(String::trim)
                 .filter(value -> !value.isEmpty())
                 .toList();
+    }
+
+    // 커서 기반 페이지네이션 - 내가 작성한 리뷰 조회
+    public ReviewResponseDTO.MemberReviewPageDto getMemberReviews(Long userId, ReviewRequestDTO.MemberReviewRequestDto request) {
+        // 사용자 존재 확인
+        if (!userRepository.existsById(userId)) {
+            throw new UserException(UserErrorCode.USER_NOT_FOUND);
+        }
+
+        String query = request.getQuery().toLowerCase();
+        if (!query.equals("id") && !query.equals("star")) {
+            throw new ReviewException(ReviewErrorCode.INVALID_REVIEW_REQUEST);
+        }
+
+        Pageable pageable = PageRequest.of(0, request.getPageSize() + 1);
+        List<Review> reviews;
+
+        if (query.equals("id")) {
+            // ID 순 정렬 (내림차순)
+            reviews = reviewRepository.findMemberReviewsById(userId, request.getCursor(), pageable);
+        } else {
+            // 별점 순 정렬 (내림차순)
+            Float cursor = request.getCursor() == null ? null : request.getCursor().floatValue();
+            Long lastId = request.getCursor() == null ? null : Long.MAX_VALUE;
+            reviews = reviewRepository.findMemberReviewsByStar(userId, cursor, lastId, pageable);
+        }
+
+        // hasNext 판단 (pageSize + 1개를 조회했으므로)
+        boolean hasNext = reviews.size() > request.getPageSize();
+        if (hasNext) {
+            reviews = reviews.subList(0, request.getPageSize());
+        }
+
+        // 다음 커서 값 계산
+        Long nextCursor = null;
+        if (hasNext && !reviews.isEmpty()) {
+            Review lastReview = reviews.get(reviews.size() - 1);
+            if (query.equals("id")) {
+                nextCursor = lastReview.getId();
+            } else {
+                nextCursor = lastReview.getStar().longValue();
+            }
+        }
+
+        List<ReviewResponseDTO.MemberReviewDto> reviewList = reviews.stream()
+                .map(this::toMemberReviewDto)
+                .toList();
+
+        return ReviewResponseDTO.MemberReviewPageDto.builder()
+                .reviewList(reviewList)
+                .listSize(reviewList.size())
+                .nextCursor(nextCursor)
+                .hasNext(hasNext)
+                .build();
+    }
+
+    private ReviewResponseDTO.MemberReviewDto toMemberReviewDto(Review review) {
+        return ReviewResponseDTO.MemberReviewDto.builder()
+                .reviewId(review.getId())
+                .storeName(review.getStore().getName())
+                .score(review.getStar())
+                .content(review.getContent())
+                .createdAt(review.getCreatedAt() == null ? null : review.getCreatedAt().toLocalDate().toString())
+                .build();
     }
 }
