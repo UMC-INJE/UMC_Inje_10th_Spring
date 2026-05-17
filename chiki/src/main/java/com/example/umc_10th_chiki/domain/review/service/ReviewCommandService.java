@@ -20,14 +20,14 @@ public class ReviewCommandService {
     private final StoreRepository storeRepository;
 
     // [6주차 미션] 리뷰 작성 로직
-    public Review createReview(Long memberId, Long storeId, String body, Float score) {
+    public Review createReview(Long memberId, Long storeId, String text, Float score) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new RuntimeException("Member not found"));
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found"));
 
         Review review = Review.builder()
                 .member(member)
                 .store(store)
-                .body(body)
+                .text(text)
                 .score(score)
                 .build();
 
