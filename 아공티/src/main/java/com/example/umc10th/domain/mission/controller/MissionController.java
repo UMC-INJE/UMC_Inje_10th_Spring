@@ -4,6 +4,7 @@ import com.example.umc10th.domain.member.converter.MemberMissionConverter;
 import com.example.umc10th.domain.member.service.MemberService;
 import com.example.umc10th.domain.mission.converter.MissionConverter;
 import com.example.umc10th.domain.mission.dto.MemberMissionResponseDTO;
+import com.example.umc10th.domain.mission.dto.MissionReqDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
 import com.example.umc10th.domain.mission.entity.Mission;
 import com.example.umc10th.domain.mission.entity.mapping.MemberMission;
@@ -11,6 +12,7 @@ import com.example.umc10th.domain.mission.enums.Address;
 import com.example.umc10th.domain.mission.enums.MissionStatus;
 import com.example.umc10th.domain.mission.service.MissionService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,16 @@ public class MissionController {
     ) {
         Page<Mission> missionPage = missionService.getMissionListByAddress(address, page);
         return ApiResponse.onSuccess(MissionConverter.toMissionPreViewListDTO(missionPage));
+    }
+    //진행중인 미션 조회
+    @PostMapping("/missions/challenging")
+    public ApiResponse<MissionResDTO.MissionPreViewListDTO> getChallengingMissions(
+            @Valid @RequestBody MissionReqDTO.ChallengeMissionListDTO request,
+            @RequestParam(name = "page", defaultValue = "1") Integer page
+    ) {
+        Page<MemberMission> missionPage = memberService.getMyMissionList(request.getMemberId(), MissionStatus.CHALLENGING, page);
+
+        return ApiResponse.onSuccess(MissionConverter.toMemberMissionPreViewListDTO(missionPage));
     }
     }
 
