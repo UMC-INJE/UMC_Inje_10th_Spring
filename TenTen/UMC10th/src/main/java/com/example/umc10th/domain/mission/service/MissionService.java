@@ -11,6 +11,7 @@ import com.example.umc10th.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,6 +33,25 @@ public class MissionService {
         );
 
         return MissionConverter.toHomeMissionListDTO(missions);
+    }
+    public MissionResDTO.MyMissionPageDTO getMyMissionList(
+            Long userId,
+            String status,
+            Integer page,
+            Integer size
+    ){
+
+        PageRequest pageRequest =
+                PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<MyMission> myMissionPage =
+                myMissionRepository.findAllByUser_UserIdAndStatus(
+                        userId,
+                        status,
+                        pageRequest
+                );
+
+        return MissionConverter.toMyMissionPageDTO(myMissionPage);
     }
 
     // 내가 진행중/진행완료한 미션 조회

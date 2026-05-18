@@ -42,7 +42,31 @@ public class MissionConverter {
                 .status(myMission.getStatus())
                 .build();
     }
+    public static MissionResDTO.MyMissionPreviewDTO toMyMissionPreviewDTO(MyMission myMission){
 
+        return MissionResDTO.MyMissionPreviewDTO.builder()
+                .myMissionId(myMission.getMyMissionId())
+                .missionTitle(myMission.getMission().getMissionTitle())
+                .missionReward(myMission.getMission().getMissionReward())
+                .missionStatus(myMission.getStatus())
+                .build();
+    }
+    public static MissionResDTO.MyMissionPageDTO toMyMissionPageDTO(Page<MyMission> myMissionPage){
+
+        List<MissionResDTO.MyMissionPreviewDTO> missionList =
+                myMissionPage.stream()
+                        .map(MissionConverter::toMyMissionPreviewDTO)
+                        .toList();
+
+        return MissionResDTO.MyMissionPageDTO.builder()
+                .missionList(missionList)
+                .listSize(missionList.size())
+                .totalPage(myMissionPage.getTotalPages())
+                .totalElements(myMissionPage.getTotalElements())
+                .isFirst(myMissionPage.isFirst())
+                .isLast(myMissionPage.isLast())
+                .build();
+    }
     public static MissionResDTO.MyMissionListDTO toMyMissionListDTO(Page<MyMission> myMissions) {
         List<MissionResDTO.MyMissionDTO> myMissionList = myMissions.stream()
                 .map(MissionConverter::toMyMissionDTO)

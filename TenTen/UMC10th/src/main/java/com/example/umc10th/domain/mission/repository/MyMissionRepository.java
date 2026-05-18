@@ -7,8 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MyMissionRepository extends JpaRepository<MyMission, Long> {
 
-    // 내가 진행중/진행완료한 미션 조회
     Page<MyMission> findByUserUserIdAndStatus(
+            Long userId,
+            String status,
+            Pageable pageable
+    );
+
+    Page<MyMission> findAllByUser_UserIdAndStatus(
             Long userId,
             String status,
             Pageable pageable

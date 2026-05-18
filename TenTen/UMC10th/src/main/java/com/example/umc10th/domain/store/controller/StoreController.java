@@ -6,6 +6,7 @@ import com.example.umc10th.domain.store.service.StoreService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +30,38 @@ public class StoreController {
             @Parameter(description = "가게 ID", example = "12")
             @PathVariable Long storeId,
 
-            @RequestBody StoreReqDTO.CreateReviewDTO request
+            @Valid @RequestBody StoreReqDTO.CreateReviewDTO request
     ) {
 
         Long userId = 1L;
 
         return ApiResponse.onSuccess(
                 storeService.createReview(userId, storeId, request)
+        );
+    }
+    @Operation(
+            summary = "내가 작성한 리뷰 조회 API",
+            description = "사용자가 작성한 리뷰 목록을 조회합니다."
+    )
+    @GetMapping("/my/reviews")
+    public ApiResponse<StoreResDTO.MyReviewPageDTO> getMyReviewList(
+
+            @RequestHeader(value = "Authorization", required = false)
+            String authorization,
+
+            @RequestParam Integer page,
+
+            @RequestParam Integer size
+    ){
+
+        Long userId = 1L;
+
+        return ApiResponse.onSuccess(
+                storeService.getMyReviewList(
+                        userId,
+                        page,
+                        size
+                )
         );
     }
 }

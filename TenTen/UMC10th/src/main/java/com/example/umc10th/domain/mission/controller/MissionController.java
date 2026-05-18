@@ -15,6 +15,8 @@ public class MissionController {
 
     private final MissionService missionService;
 
+
+
     @Operation(
             summary = "홈 화면 미션 목록 조회 API",
             description = "현재 선택된 지역에서 도전 가능한 미션 목록을 조회합니다."
@@ -39,6 +41,7 @@ public class MissionController {
         );
     }
 
+
     @Operation(
             summary = "내 미션 목록 조회 API",
             description = "사용자가 진행중 또는 진행완료한 미션 목록을 조회합니다."
@@ -47,7 +50,7 @@ public class MissionController {
     public ApiResponse<MissionResDTO.MyMissionListDTO> getMyMissions(
 
             @Parameter(description = "Access Token", example = "Bearer accessToken")
-            @RequestHeader("Authorization") String authorization,
+            @RequestHeader(value = "Authorization", required = false) String authorization,
 
             @Parameter(description = "미션 진행 상태", example = "진행중")
             @RequestParam String status,

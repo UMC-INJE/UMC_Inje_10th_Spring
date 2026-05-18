@@ -5,9 +5,52 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 public class StoreResDTO {
 
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MyReviewPreviewDTO {
+
+        @JsonProperty("store_name")
+        String storeName;
+
+        @JsonProperty("store_review_rating")
+        Float storeReviewRating;
+
+        @JsonProperty("store_review_content")
+        String storeReviewContent;
+    }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MyReviewPageDTO {
+
+        @JsonProperty("review_list")
+        List<MyReviewPreviewDTO> reviewList;
+
+        @JsonProperty("list_size")
+        Integer listSize;
+
+        @JsonProperty("total_page")
+        Integer totalPage;
+
+        @JsonProperty("total_elements")
+        Long totalElements;
+
+        @JsonProperty("is_first")
+        Boolean isFirst;
+
+        @JsonProperty("is_last")
+        Boolean isLast;
+    }
     @Getter
     @Builder
     @AllArgsConstructor

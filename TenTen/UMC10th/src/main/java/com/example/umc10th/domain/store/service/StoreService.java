@@ -14,6 +14,9 @@ import com.example.umc10th.domain.user.repository.UserRepository;
 import com.example.umc10th.global.apiPayload.code.GeneralErrorCode;
 import com.example.umc10th.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +28,23 @@ public class StoreService {
     private final StoreReviewRepository storeReviewRepository;
     private final MyMissionRepository myMissionRepository;
     private final UserRepository userRepository;
+    public StoreResDTO.MyReviewPageDTO getMyReviewList(
+            Long userId,
+            Integer page,
+            Integer size
+    ){
 
+        PageRequest pageRequest =
+                PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<StoreReview> reviewPage =
+                storeReviewRepository.findAllByUser_UserId(
+                        userId,
+                        pageRequest
+                );
+
+        return StoreConverter.toMyReviewPageDTO(reviewPage);
+    }
     // 리뷰 작성 쿼리
     @Transactional
     public StoreResDTO.CreateReviewResultDTO createReview(
