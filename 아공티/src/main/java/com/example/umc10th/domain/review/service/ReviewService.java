@@ -9,6 +9,8 @@ import com.example.umc10th.domain.review.dto.ReviewRequestDTO;
 import com.example.umc10th.domain.review.entity.Review;
 import com.example.umc10th.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,5 +39,18 @@ public class ReviewService {
                 .build();
 
         return reviewRepository.save(review);
+    }
+    // 내가 생성한 리뷰 목록
+    public Slice<Review> getMyReviewList(Long memberId, ReviewRequestDTO.MyReviewListDTO request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        if ("star".equals(request.getSortBy())) {
+            return reviewRepository.findMyReviewsByStarCursor(member, request.getCursorStar(), request.getCursorId(), pageRequest);
+        } else {
+            return reviewRepository.findMyReviewsByIdCursor(member, request.getCursorId(), pageRequest);
+        }
     }
 }

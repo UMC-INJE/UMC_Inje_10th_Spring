@@ -46,4 +46,13 @@ public class ReviewResponseDTO {
         String body;
         LocalDate createdAt;
     }
+
+    @Builder @Getter @NoArgsConstructor @AllArgsConstructor
+    public static class MyReviewCursorListDTO {
+        List<ReviewPreViewDTO> reviewList;
+        Integer listSize;
+        Long nextCursorId;
+        Float nextCursorStar;
+        Boolean hasNext;
+    }
 }
