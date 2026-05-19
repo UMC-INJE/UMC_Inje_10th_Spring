@@ -1,7 +1,7 @@
 package com.example.umc10th.domain.mission.dto;
 
 import lombok.*;
-import java.time.LocalDateTime; // LocalDate에서 LocalDateTime으로 변경 (엔티티와 일치)
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MissionResDTO {
@@ -24,9 +24,11 @@ public class MissionResDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MissionPreViewDTO {
-        String storeName;
-        String missionSpec;
-        Integer reward;
-        LocalDateTime deadline;
+        private Long memberMissionId;
+        private String storeName;
+        private String missionSpec;
+        private Integer reward;
+        private String status;
+        private LocalDateTime deadline;
     }
 }
