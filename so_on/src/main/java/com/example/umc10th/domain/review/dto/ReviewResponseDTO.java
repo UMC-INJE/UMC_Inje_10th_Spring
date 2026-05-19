@@ -56,4 +56,27 @@ public class ReviewResponseDTO {
         private Long replyId;
         private String content;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberReviewPageDto {
+        private List<MemberReviewDto> reviewList;
+        private Integer listSize;
+        private Long nextCursor; // 다음 커서 값
+        private Boolean hasNext; // 다음 페이지 여부
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberReviewDto {
+        private Long reviewId;
+        private String storeName;
+        private Float score;
+        private String content;
+        private String createdAt;
+    }
 }

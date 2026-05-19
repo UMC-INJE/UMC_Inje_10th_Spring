@@ -1,12 +1,13 @@
 package com.example.umc10th.domain.mission.Controller;
 
 import com.example.umc10th.domain.mission.Service.MissionService;
+import com.example.umc10th.domain.mission.dto.MissionRequestDTO;
 import com.example.umc10th.domain.mission.dto.MissionResponseDTO;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,16 +30,7 @@ public class MissionController {
     public ApiResponse<String> updateMissionStatus(
             @PathVariable Long userId,
             @PathVariable Long missionId,
-            @RequestBody Map<String, String> body) {
-        return ApiResponse.onSuccess(missionService.updateMissionStatus(userId, missionId, body.get("status")));
+            @Valid @RequestBody MissionRequestDTO.UpdateStatusDto request) {
+        return ApiResponse.onSuccess(missionService.updateMissionStatus(userId, missionId, request.getStatus()));
     }
 }
-/*
-    //미션 상태 변경 02 (DTO를 사용하는 방법)
-    public ApiResponse<String> updateMissionStatus(
-            @PathVariable Long userId,
-            @PathVariable Long missionId,
-            @RequestBody MissionRequestDTO.UpdateStatusDto request) {
-        return ApiResponse.onSuccess(missionId + "번 미션 상태 변경 완료");
-    }
-    */
