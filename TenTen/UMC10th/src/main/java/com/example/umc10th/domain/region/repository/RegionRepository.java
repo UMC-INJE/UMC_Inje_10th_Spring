@@ -1,4 +1,9 @@
 package com.example.umc10th.domain.region.repository;
 
-public interface RegionRepository {
+import com.example.umc10th.domain.region.entity.Region;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RegionRepository
+        extends JpaRepository<Region, Long> {
+
 }

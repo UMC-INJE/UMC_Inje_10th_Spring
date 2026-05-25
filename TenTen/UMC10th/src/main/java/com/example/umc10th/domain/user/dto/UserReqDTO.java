@@ -2,6 +2,7 @@ package com.example.umc10th.domain.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -19,15 +20,18 @@ public class UserReqDTO {
         @JsonProperty("user_login_id")
         private String userLoginId;
 
-        @Schema(description = "비밀번호", example = "1234")
-        @JsonProperty("user_password")
-        private String userPassword;
-
         @Schema(description = "이름", example = "김태완")
         @JsonProperty("user_name")
         private String userName;
 
+        //8. 비밀번호 및 이메일 @NotBlank 추가
+        @Schema(description = "비밀번호", example = "1234")
+        @NotBlank
+        @JsonProperty("password")
+        private String password;
+
         @Schema(description = "이메일", example = "taewan@test.com")
+        @NotBlank
         @JsonProperty("user_email")
         private String userEmail;
 

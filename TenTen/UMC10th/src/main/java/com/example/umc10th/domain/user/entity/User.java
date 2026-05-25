@@ -47,6 +47,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String userPhone;
 
+    /*
+    //8. 비밀번호 컬럼 추가
+    @Column(nullable = false)
+    private String password;*/
+
     @Column(nullable = false)
     private String userNickname;
 
