@@ -4,7 +4,6 @@ import com.example.umc_10th_chiki.domain.store.entity.Region;
 import com.example.umc_10th_chiki.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -24,31 +23,28 @@ public class Member extends BaseEntity {
     @Column(name = "user_alias", nullable = false, length = 50)
     private String alias;
 
-    @Column(name = "birth_date", length = 20)
-    private String birthDate;
-
-    @Column(name = "user_address", length = 100)
-    private String address;
-
-    @Column(name = "user_email", nullable = false, length = 100)
+    @Column(name = "user_email", nullable = false, length = 50)
     private String email;
+
+    @Column(name = "user_address")
+    private String address;
 
     @Column(name = "user_gender")
     private Integer gender;
 
-    @Column(name = "user_phone", nullable = false, length = 13)
+    @Column(name = "user_phone")
     private String phone;
 
-    @Column(name = "status", nullable = false, length = 15)
+    @Column(nullable = false)
+    private String password;
+
+    private String birthDate;
+
     private String status;
 
-    @Column(name = "inactive_date")
-    private LocalDate inactiveDate;
-
-    @Column(name = "notify_setting_id", nullable = false)
     private Long notifySettingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "region_id", nullable = false)
+    @JoinColumn(name = "region_id")
     private Region region;
 }

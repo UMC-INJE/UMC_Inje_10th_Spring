@@ -16,7 +16,7 @@ public class MissionReqDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class OngoingMissionDTO {
-        @NotNull(message = "사용자 ID는 필수입니다.")
+        @NotBlank(message = "사용자 ID는 필수입니다.")
         private Long memberId;
     }
 
@@ -33,11 +33,11 @@ public class MissionReqDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateMissionDTO {
-        @NotNull(message = "마감일은 필수입니다.")
+        @NotBlank(message = "마감일은 필수입니다.")
         @Future(message = "마감일은 과거일 수 없습니다.")
         private LocalDate deadline;
 
-        @NotNull(message = "포인트는 필수입니다.")
+        @NotBlank(message = "포인트는 필수입니다.")
         @Min(value = 1, message = "포인트는 1 이상이어야 합니다.")
         private Integer point;
 
