@@ -42,14 +42,14 @@ public class ReviewService {
     }
     // 내가 생성한 리뷰 목록
     public Slice<Review> getMyReviewList(Long memberId, ReviewRequestDTO.MyReviewListDTO request) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findById(memberId) //유저 확인
                 .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        PageRequest pageRequest = PageRequest.of(0, 10); //1페이지당 10개씩
 
-        if ("star".equals(request.getSortBy())) {
+        if ("star".equals(request.getSortBy())) {//별점순
             return reviewRepository.findMyReviewsByStarCursor(member, request.getCursorStar(), request.getCursorId(), pageRequest);
-        } else {
+        } else { //최신순
             return reviewRepository.findMyReviewsByIdCursor(member, request.getCursorId(), pageRequest);
         }
     }

@@ -37,6 +37,7 @@ public class ReviewController {
     public ApiResponse<ReviewResponseDTO.MyReviewCursorListDTO> getMyReviews(
             @PathVariable Long memberId,
             @ModelAttribute ReviewRequestDTO.MyReviewListDTO request
+            //Get 이라서 RequestBody를 못씀, 결국은 RequestParam으로 다 받아야 하는데 코드가 더러워짐
     ) {
 
         Slice<Review> reviewSlice = reviewService.getMyReviewList(memberId, request);

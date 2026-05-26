@@ -15,4 +15,10 @@ public class MemberConverter {
                 .phoneNumber(member.getPhoneNumber())
                 .build();
     }
+    //회원가입
+    public static MemberResDTO.JoinResultDTO toJoinResultDTO(Member member) {
+        return MemberResDTO.JoinResultDTO.builder()
+                .memberId(member.getId())
+                .build();
+    }
 }
