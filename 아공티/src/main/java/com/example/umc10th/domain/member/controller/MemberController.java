@@ -1,7 +1,9 @@
 package com.example.umc10th.domain.member.controller;
 
+import com.example.umc10th.domain.member.converter.MemberConverter;
 import com.example.umc10th.domain.member.dto.MemberReqDTO;
 import com.example.umc10th.domain.member.dto.MemberResDTO;
+import com.example.umc10th.domain.member.entity.Member;
 import com.example.umc10th.domain.member.exception.code.MemberSuccessCode;
 import com.example.umc10th.domain.member.service.MemberService;
 import com.example.umc10th.domain.review.converter.ReviewConverter;
@@ -9,6 +11,7 @@ import com.example.umc10th.domain.review.dto.ReviewResponseDTO;
 import com.example.umc10th.domain.review.entity.Review;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import com.example.umc10th.global.apiPayload.code.BaseSuccessCode;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +24,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 내 정보 조회
-    @GetMapping("/me/{memberId}") // 실제로는 토큰을 쓰지만 지금은 ID를 경로로 받습니다.
+    @GetMapping("/me/{memberId}") 
     public ApiResponse<MemberResDTO.GetInfo> getMyInfo(@PathVariable Long memberId) {
         return ApiResponse.onSuccess(memberService.getInfo(memberId));
     }
@@ -34,5 +37,14 @@ public class MemberController {
     ) {
         Page<Review> reviewPage = memberService.getMyReviewList(memberId, page);
         return ApiResponse.onSuccess(ReviewConverter.reviewPreViewListDTO(reviewPage));
+    }
+    //회원가입
+    @PostMapping("/register")
+    public ApiResponse<MemberResDTO.JoinResultDTO> join(
+            @Valid @RequestBody MemberReqDTO.JoinDTO request
+    ) {
+        Member member = memberService.joinMember(request);
+
+        return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(member));
     }
 }

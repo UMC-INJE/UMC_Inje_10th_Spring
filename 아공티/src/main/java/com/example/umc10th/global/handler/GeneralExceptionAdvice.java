@@ -17,6 +17,7 @@ import java.util.Map;
 public class GeneralExceptionAdvice {
 
     // @Valid 검증 실패 시 발생하는 예외를 캐치
+    //RequestBody에 필수값을 빼먹거나 글자 수 제한을 어겼을경우
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e
@@ -37,7 +38,7 @@ public class GeneralExceptionAdvice {
                 .body(ApiResponse.onFailure(errorCode, errors));
     }
 
-    // 프로젝트에서 발생한 예외 처리
+    // 프로젝트에서 발생한 예외 처리(Ex: 유저 정보나, 가게 정보가 없을 경우)
     @ExceptionHandler(ProjectException.class)
     public ResponseEntity<ApiResponse<Void>> handleMemberException(ProjectException e) {
         BaseErrorCode errorCode = e.getErrorCode();
