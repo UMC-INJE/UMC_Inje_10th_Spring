@@ -31,6 +31,9 @@ public class User extends BaseEntity {
     @Column(nullable = false, length = 20)
     private String name;
 
+    @Column(nullable = false, length = 255)
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)")
     private Gender gender;
@@ -53,7 +56,7 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "INTEGER DEFAULT 0")
     private Integer point;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String email;
 
     @Column(name = "phone_number", length = 15)

@@ -17,5 +17,14 @@ spring:
       hibernate:
         format_sql: true # ???? SQL ??? ?? ?? ???
 
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
 server:
   port: 8081
+
+jwt:
+  secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-1234567890}
+  access-token-validity-ms: ${JWT_ACCESS_TOKEN_VALIDITY_MS:3600000}
