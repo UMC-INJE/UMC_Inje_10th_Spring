@@ -19,7 +19,7 @@ public class MemberResDTO {
         private String phoneNumber;
     }
 
-    // 🔥 [추가] 회원가입 완료 응답 DTO
+    // 회원가입 완료 응답 DTO
     @Builder
     @Getter
     @NoArgsConstructor

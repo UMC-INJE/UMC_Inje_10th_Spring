@@ -41,6 +41,17 @@ public class MemberReqDTO {
         // 선호 음식 카테고리 ID 리스트 (중복 체크)
         private List<Long> preferCategoryIds;
     }
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginDTO {
+        @NotBlank @Email
+        private String email;
+
+        @NotBlank
+        private String password;
+    }
+
     public record GetInfo(
             Long id
     ){}
