@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,11 +47,32 @@ public class UserController {
             @RequestHeader(value = "Authorization", required = false)
             String authorization
     ) {
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
 
-        Long userId = 1L;
+        String email =
+                authentication.getName();
 
         return ApiResponse.onSuccess(
-                userService.getMyPage(userId)
+                userService.getMyPageByEmail(email)
+        );
+    }
+    //9. 로그인 API
+    @Operation(
+            summary = "로그인 API",
+            description = "JWT 로그인 API입니다."
+    )
+    @PostMapping("/auth/login")
+    public ApiResponse<UserResDTO.LoginResultDTO> login(
+
+            @RequestBody
+            UserReqDTO.LoginDTO request
+    ){
+
+        return ApiResponse.onSuccess(
+                userService.login(request)
         );
     }
 }

@@ -9,6 +9,7 @@ import com.example.umc10th.domain.user.entity.User;
 import com.example.umc10th.domain.user.repository.UserRepository;
 import com.example.umc10th.global.apiPayload.code.GeneralErrorCode;
 import com.example.umc10th.global.apiPayload.exception.ProjectException;
+import com.example.umc10th.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,20 @@ public class UserService {
     private final UserRepository userRepository;
     private final RegionRepository regionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     // 회원가입
     public UserResDTO.SignUpResultDTO signUp(
             UserReqDTO.SignUpDTO request
     ){
+        // 9.이메일 중복 검사
+        if(userRepository.existsByUserEmail(
+                request.getUserEmail()
+        )){
+            throw new ProjectException(
+                    GeneralErrorCode.BAD_REQUEST
+            );
+        }
 
         Region region = regionRepository.findById(request.getRegionId())
                 .orElseThrow(() ->
@@ -52,6 +62,49 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
                         new ProjectException(GeneralErrorCode.NOT_FOUND));
+
+        return UserConverter.toMyPageDTO(user);
+    }
+
+    //9.로그인 추가
+    public UserResDTO.LoginResultDTO login(
+            UserReqDTO.LoginDTO request
+    ){
+
+        User user = userRepository
+                .findByUserEmail(request.getUserEmail())
+                .orElseThrow(() ->
+                        new ProjectException(
+                                GeneralErrorCode.NOT_FOUND
+                        ));
+
+        // BCrypt 검증
+        if(!passwordEncoder.matches(
+                request.getPassword(),
+                user.getUserPassword()
+        )){
+            throw new ProjectException(
+                    GeneralErrorCode.BAD_REQUEST
+            );
+        }
+
+        String token =
+                jwtUtil.createToken(user.getUserEmail());
+
+        return UserResDTO.LoginResultDTO
+                .builder()
+                .accessToken(token)
+                .build();
+    }
+    public UserResDTO.MyPageDTO
+    getMyPageByEmail(String email){
+
+        User user = userRepository
+                .findByUserEmail(email)
+                .orElseThrow(() ->
+                                new ProjectException(
+                                        GeneralErrorCode.NOT_FOUND
+                                ));
 
         return UserConverter.toMyPageDTO(user);
     }

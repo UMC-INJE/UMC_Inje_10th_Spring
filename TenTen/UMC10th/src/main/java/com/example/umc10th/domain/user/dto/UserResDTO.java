@@ -54,4 +54,12 @@ public class UserResDTO {
         @JsonProperty("user_point")
         private Integer userPoint;
     }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class LoginResultDTO {
+
+        @JsonProperty("access_token")
+        private String accessToken;
+    }
 }

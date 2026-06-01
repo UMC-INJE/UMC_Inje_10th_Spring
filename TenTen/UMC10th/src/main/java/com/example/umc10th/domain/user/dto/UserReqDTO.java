@@ -55,4 +55,17 @@ public class UserReqDTO {
         @JsonProperty("user_nickname")
         private String userNickname;
     }
+    @Getter
+    public static class LoginDTO {
+
+        @Schema(description = "이메일", example = "taewan@test.com")
+        @NotBlank
+        @JsonProperty("user_email")
+        private String userEmail;
+
+        @Schema(description = "비밀번호", example = "1234")
+        @NotBlank
+        @JsonProperty("password")
+        private String password;
+    }
 }
