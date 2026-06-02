@@ -6,12 +6,21 @@ import com.example.umc10th.domain.review.Repository.ReviewRepository;
 import com.example.umc10th.domain.user.Entity.User;
 import com.example.umc10th.domain.user.Repository.UserRepository;
 import com.example.umc10th.domain.user.code.UserErrorCode;
+import com.example.umc10th.domain.user.dto.UserRequestDTO;
 import com.example.umc10th.domain.user.dto.UserResponseDTO;
 import com.example.umc10th.domain.user.exception.UserException;
+import com.example.umc10th.global.security.JwtTokenProvider;
+import com.example.umc10th.global.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +34,45 @@ public class UserService {
     private final UserRepository userRepository;
     private final MemberMissionRepository memberMissionRepository;
     private final ReviewRepository reviewRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @Transactional
+    public UserResponseDTO.SignupResultDto signup(UserRequestDTO.SignupDto request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserException(UserErrorCode.DUPLICATE_EMAIL);
+        }
+
+        User savedUser = userRepository.save(User.builder()
+                .name(deriveNickname(request.getEmail()))
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .point(0)
+                .build());
+
+        return UserResponseDTO.SignupResultDto.builder()
+                .userId(savedUser.getId())
+                .email(savedUser.getEmail())
+                .createdAt(savedUser.getCreatedAt())
+                .build();
+    }
+
+    public UserResponseDTO.LoginResultDto login(UserRequestDTO.LoginDto request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        String accessToken = jwtTokenProvider.createAccessToken(principal);
+
+        return UserResponseDTO.LoginResultDto.builder()
+                .userId(principal.getUserId())
+                .email(principal.getEmail())
+                .tokenType("Bearer")
+                .accessToken(accessToken)
+                .expiredAt(LocalDateTime.now().plusNanos(jwtTokenProvider.getAccessTokenValidityMs() * 1_000_000))
+                .build();
+    }
 
     public UserResponseDTO.HomeDto getHome(Long userId, String location, Integer page) {
         User user = getUser(userId);
@@ -68,8 +116,12 @@ public class UserService {
                 .build();
     }
 
-    public UserResponseDTO.MyPageDto getMyPage(Long userId) {
-        User user = getUser(userId);
+    public UserResponseDTO.MyPageDto getMyPage(Long requestUserId, UserPrincipal principal) {
+        if (principal == null || !requestUserId.equals(principal.getUserId())) {
+            throw new UserException(UserErrorCode.USER_FORBIDDEN);
+        }
+
+        User user = getUser(principal.getUserId());
         boolean phoneVerified = user.getPhoneNumber() != null && !user.getPhoneNumber().isBlank();
 
         return UserResponseDTO.MyPageDto.builder()
@@ -79,9 +131,14 @@ public class UserService {
                 .phoneNumber(user.getPhoneNumber())
                 .phoneVerificationStatus(phoneVerified ? "인증완료" : "미인증")
                 .totalPoints(user.getPoint())
-                .reviewCount(reviewRepository.countByUserId(userId))
+                .reviewCount(reviewRepository.countByUserId(user.getId()))
                 .profileImageUrl(user.getProfileUrl())
                 .build();
+    }
+
+    private String deriveNickname(String email) {
+        String nickname = email.contains("@") ? email.substring(0, email.indexOf("@")) : email;
+        return nickname.length() > 20 ? nickname.substring(0, 20) : nickname;
     }
 
     private User getUser(Long userId) {
