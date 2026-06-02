@@ -1,16 +1,33 @@
 package com.example.umc10th.global.config;
+
+import com.example.umc10th.global.security.JwtAuthenticationFilter; // 🌟 패키지 경로에 맞게 확인하세요!
+import com.example.umc10th.global.security.JwtUtil;              // 🌟 패키지 경로에 맞게 확인하세요!
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@SecurityScheme(
+        name = "BearerAuth",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
 
-    // 서비스 레이어에서 주입받아 사용할 수 있도록 빈(Bean)으로 등록
+    // JwtUtil을 스프링이 자동으로 주입해주도록 필드로 선언
+    private final JwtUtil jwtUtil;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -19,18 +36,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // 테스트 및 실습 편의상 CSRF 비활성화
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 회원가입 API 주소는 Public(로그인 없이 허용)으로 세팅
-                        .requestMatchers("/api/register").permitAll()
+                        .requestMatchers("/api/register", "/api/login").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        // 그 외 모든 API는 Private(로그인 필요)으로 통제
                         .anyRequest().authenticated()
                 );
+
+        // UsernamePasswordAuthenticationFilter 실행 전에 우리가 만든 JWT 필터를 먼저 거치도록 설정
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

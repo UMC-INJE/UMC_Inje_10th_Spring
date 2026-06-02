@@ -85,6 +85,19 @@ public class MemberService {
         // DB에 저장 후 엔티티 반환
         return memberRepository.save(member);
     }
+    //로그인
+    public Member login(MemberReqDTO.LoginDTO request) {
+        // 이메일로 유저 찾기
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND)); //틀리면 에러 코드
+
+        // 암호화된 비밀번호가 일치하는지 확인
+        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+            throw new MemberException(MemberErrorCode.INVALID_PASSWORD); // 비번 틀림 에러
+        }
+
+        return member; // 검증 성공 시 멤버 반환
+    }
 
 
 }
